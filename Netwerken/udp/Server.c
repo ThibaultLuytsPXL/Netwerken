@@ -6,6 +6,7 @@
 	#include <unistd.h> //for close
 	#include <stdlib.h> //for exit
 	#include <string.h> //for memset
+	#include <time.h>//for time functions
 	void OSInit( void )
 	{
 		WSADATA wsaData;
@@ -134,13 +135,18 @@ void execution( int internet_socket )
 	socklen_t client_internet_address_length = sizeof client_internet_address;
 	int aantal;
 	int counter = 0;
+	int ontvangen =0;
+	time_t start_t, end_t;
+	double diff_t;
 	printf("geef het aantal te ontvangen pakketten op: ");
 	scanf("%d",&aantal );
+	time(&start_t);
 	while (aantal > counter) {
 	number_of_bytes_received = recvfrom( internet_socket, buffer, ( sizeof buffer ) - 1, 0, (struct sockaddr *) &client_internet_address, &client_internet_address_length );
 	if( number_of_bytes_received == -1 )
 	{
 		perror( "recvfrom" );
+		ontvangen++;
 	}
 	else
 	{
@@ -150,6 +156,10 @@ void execution( int internet_socket )
 	fprintf(fp, "%s\n", buffer);
 	counter++;
 }
+	time(&end_t);
+	diff_t = difftime(end_t, start_t);
+	printf("de tijd tussen het eerste en laatste bericht is: %f\n",diff_t );
+	printf("aantal ontvagen paketten zijn: %d \n", aantal - ontvangen);
 	fclose(fp);
 	//Step 2.2
 	int number_of_bytes_send = 0;
