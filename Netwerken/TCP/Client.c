@@ -125,7 +125,10 @@ void execution( int internet_socket )
 {
 	//Step 2.1
 	int number_of_bytes_send = 0;
-	number_of_bytes_send = send( internet_socket, "Hello TCP world!", 16, 0 );
+	char input[256];
+	printf("message: " );
+	gets(input);
+	number_of_bytes_send = send( internet_socket, input, strlen(input)+1, 0 );
 	if( number_of_bytes_send == -1 )
 	{
 		perror( "send" );
