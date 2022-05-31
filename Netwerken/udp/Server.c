@@ -128,6 +128,13 @@ void execution( int internet_socket )
 	FILE * fp = NULL;
 	fp = fopen("C:\\Users\\Administrator\\Documents\\School\\Semester2\\Netwerken\\udp\\test.csv", "w");
 
+	int timeout = 0;
+	printf("de timeout seconden staat op?: ");
+	scanf("%d", &timeout);
+	timeout = timeout * 1000;
+	if (setsockopt(internet_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) <0){
+		perror("Error");
+	}
 	//Step 2.1
 	int number_of_bytes_received = 0;
 	char buffer[1000];
@@ -135,13 +142,18 @@ void execution( int internet_socket )
 	socklen_t client_internet_address_length = sizeof client_internet_address;
 	int aantal;
 	int counter = 0;
-	int ontvangen =0;
+	int ontvangen = 0;
 	time_t start_t, end_t;
 	double diff_t;
+
+
 	printf("geef het aantal te ontvangen pakketten op: ");
 	scanf("%d",&aantal );
+
 	time(&start_t);
+
 	while (aantal > counter) {
+
 	number_of_bytes_received = recvfrom( internet_socket, buffer, ( sizeof buffer ) - 1, 0, (struct sockaddr *) &client_internet_address, &client_internet_address_length );
 	if( number_of_bytes_received == -1 )
 	{
@@ -158,7 +170,7 @@ void execution( int internet_socket )
 }
 	time(&end_t);
 	diff_t = difftime(end_t, start_t);
-	printf("de tijd tussen het eerste en laatste bericht is: %f\n",diff_t );
+	printf("de tijd tussen het eerste en laatste bericht is: %f seconden\n",diff_t );
 	printf("aantal ontvagen paketten zijn: %d \n", aantal - ontvangen);
 	fclose(fp);
 	//Step 2.2
